@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import jakarta.transaction.Transactional;
+
 @Component
 public class JobCompletionNotificationListener implements JobExecutionListener {
 
@@ -16,13 +18,15 @@ public class JobCompletionNotificationListener implements JobExecutionListener {
 
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public JobCompletionNotificationListener(JdbcTemplate jdbcTemplate) {
+        System.out.println("JobCompletionNotificationListener Called");
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
+    @Transactional
     public void afterJob(JobExecution jobExecution) {
+        System.out.println("afterJob Called");
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
             log.info("!!! JOB FINISHED! Time to verify the results");
 
